@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Librería El Gran Poeta{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Bienvenido a la Librería El Gran Poeta</h1>
+    {% if user.is_authenticated %}
+        <p>Hola, {{ user.get_full_name }}. ¿Qué deseas hacer hoy?</p>
+        <div class="list-group">
+            <a href="{% url 'lista_bodegas' %}" class="list-group-item list-group-item-action">Ver Bodegas</a>
+            <a href="{% url 'lista_movimientos' %}" class="list-group-item list-group-item-action">Ver Movimientos</a>
+            {% if user.rol == 'jefe_bodega' or user.rol == 'admin' %}
+                <a href="{% url 'lista_productos' %}" class="list-group-item list-group-item-action">Ver Productos</a>
+            {% endif %}
+            {% if user.rol == 'jefe_bodega' or user.rol == 'admin' or user.rol == 'auditor' %}
+                <a href="{% url 'lista_informes' %}" class="list-group-item list-group-item-action">Ver Informes</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>Por favor, inicia sesión o regístrate para acceder al sistema.</p>
+        <div class="mt-3">
+            <a href="{% url 'login' %}" class="btn btn-primary me-2">Iniciar Sesión</a>
+            <a href="{% url 'registro' %}" class="btn btn-secondary">Registrarse</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Editoriales{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Editoriales</h2>
+    <a href="{% url 'fusionar_editoriales' %}" class="btn btn-primary mb-3">Fusionar Editoriales Duplicadas</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for editorial in editoriales %}
+            <tr>
+                <td>{{ editorial.nombre_editorial }}</td>
+                <td>{{ editorial.direccion }}</td>
+                <td>{{ editorial.telefono }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+

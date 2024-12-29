@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Informes{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Informes</h2>
+    </div>
+    <div class="col text-end">
+        {% if user.rol == 'admin' or user.rol == 'auditor' %}
+        <a href="{% url 'generar_informe' 'movimientos' %}" class="btn btn-primary me-2">
+            Generar Informe de Movimientos
+        </a>
+        <a href="{% url 'generar_informe' 'inventario' %}" class="btn btn-primary">
+            Generar Informe de Inventario
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Usuario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for informe in informes %}
+                <tr>
+                    <td>{{ informe.fecha_generacion }}</td>
+                    <td>{{ informe.get_tipo_informe_display }}</td>
+                    <td>{{ informe.usuario.get_full_name }}</td>
+                    <td>
+                        <a href="{% url 'descargar_informe' informe.id %}" class="btn btn-sm btn-secondary">
+                            Descargar
+                        </a>
+                        <a href="{% url 'eliminar_informe' informe.id %}" class="btn btn-sm btn-danger">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No hay informes generados</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

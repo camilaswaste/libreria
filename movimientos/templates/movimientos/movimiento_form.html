@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Movimiento{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Crear Movimiento</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label for="{{ form.bodega_origen.id_for_label }}" class="form-label">Bodega Origen</label>
+                            {{ form.bodega_origen }}
+                            {% if form.bodega_origen.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.bodega_origen.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.bodega_destino.id_for_label }}" class="form-label">Bodega Destino</label>
+                            {{ form.bodega_destino }}
+                            {% if form.bodega_destino.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.bodega_destino.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <h4 class="mt-4">Detalles del Movimiento</h4>
+                        {{ formset.management_form }}
+                        <div id="formset-container">
+                            {% for form in formset.forms %}
+                                <div class="formset-row mb-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="{{ form.producto.id_for_label }}" class="form-label">Producto</label>
+                                            {{ form.producto }}
+                                            {% if form.producto.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.producto.errors }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="{{ form.cantidad.id_for_label }}" class="form-label">Cantidad</label>
+                                            {{ form.cantidad }}
+                                            {% if form.cantidad.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.cantidad.errors }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-sm remove-form">Eliminar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" id="add-form" class="btn btn-secondary mt-2">Agregar Producto</button>
+                        
+                        <div class="text-end mt-4">
+                            <a href="{% url 'lista_movimientos' %}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        const formsetContainer = $('#formset-container');
+        const addButton = $('#add-form');
+        const totalFormsInput = $('#id_detallemovimiento_set-TOTAL_FORMS');
+
+        function updateFormIndex() {
+            $('.formset-row').each(function(index) {
+                $(this).find(':input').each(function() {
+                    updateElementIndex(this, 'detallemovimiento_set', index);
+                });
+            });
+        }
+
+        function updateElementIndex(el, prefix, index) {
+            const id_regex = new RegExp('(' + prefix + '-\\d+)');
+            const replacement = prefix +'-' + index;
+            const newId = el.id.replace(id_regex, replacement);
+            el.id = newId;
+            el.name = newId;
+        }
+
+        addButton.click(function() {
+            const totalForms = parseInt(totalFormsInput.val());
+            const newForm = formsetContainer.children().last().clone(true);
+            newForm.find(':input').val('');
+            newForm.find(':input').each(function() {
+                updateElementIndex(this, 'detallemovimiento_set', totalForms);
+            });
+            formsetContainer.append(newForm);
+            totalFormsInput.val(totalForms + 1);
+        });
+
+        $(document).on('click', '.remove-form', function() {
+            $(this).closest('.formset-row').remove();
+            updateFormIndex();
+            const totalForms = parseInt(totalFormsInput.val());
+            totalFormsInput.val(totalForms - 1);
+        });
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Bodegas{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Lista de Bodegas</h2>
+    </div>
+    <div class="col text-end">
+        <a href="{% url 'crear_bodega' %}" class="btn btn-primary">Crear Bodega</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                    <th>Jefe de Bodega</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bodega in bodegas %}
+                <tr>
+                    <td>{{ bodega.codigo_bodega }}</td>
+                    <td>{{ bodega.nombre_bodega }}</td>
+                    <td>{{ bodega.ubicacion }}</td>
+                    <td>{{ bodega.jefe_bodega.get_full_name }}</td>
+                    <td>
+                        <a href="{% url 'inventario_bodega' bodega.id %}" class="btn btn-sm btn-secondary">Ver Inventario</a>
+                        <a href="{% url 'eliminar_bodega' bodega.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No hay bodegas registradas</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if bodegas.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo; Primera</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ bodegas.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+
+        <li class="page-item disabled"><a class="page-link" href="#">Página {{ bodegas.number }} de {{ bodegas.paginator.num_pages }}</a></li>
+
+        {% if bodegas.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ bodegas.next_page_number }}">Siguiente</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ bodegas.paginator.num_pages }}">Última &raquo;</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}
+

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Fusionar Editoriales Duplicadas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Fusionar Editoriales Duplicadas</h2>
+    {% if duplicate_editorials %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="primary_editorial" class="form-label">Selecciona la editorial principal:</label>
+                <select name="primary_editorial" id="primary_editorial" class="form-select" required>
+                    <option value="">Selecciona una editorial</option>
+                    {% for editorial in duplicate_editorials %}
+                        <option value="{{ editorial.id }}">{{ editorial.nombre_editorial }} ({{ editorial.direccion }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Selecciona las editoriales duplicadas a fusionar:</label>
+                {% for editorial in duplicate_editorials %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="duplicate_editorials" value="{{ editorial.id }}" id="editorial_{{ editorial.id }}">
+                        <label class="form-check-label" for="editorial_{{ editorial.id }}">
+                            {{ editorial.nombre_editorial }} ({{ editorial.direccion }})
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Fusionar Editoriales</button>
+        </form>
+    {% else %}
+        <p>No se encontraron editoriales duplicadas.</p>
+    {% endif %}
+    <a href="{% url 'lista_editoriales' %}" class="btn btn-secondary mt-3">Volver a la lista de editoriales</a>
+</div>
+{% endblock %}
+

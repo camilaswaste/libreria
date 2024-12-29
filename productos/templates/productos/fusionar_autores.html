@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Fusionar Autores Duplicados{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Fusionar Autores Duplicados</h2>
+    {% if duplicate_authors %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="primary_author" class="form-label">Selecciona el autor principal:</label>
+                <select name="primary_author" id="primary_author" class="form-select" required>
+                    <option value="">Selecciona un autor</option>
+                    {% for author in duplicate_authors %}
+                        <option value="{{ author.id }}">{{ author.nombre_autor }} ({{ author.nacionalidad }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Selecciona los autores duplicados a fusionar:</label>
+                {% for author in duplicate_authors %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="duplicate_authors" value="{{ author.id }}" id="author_{{ author.id }}">
+                        <label class="form-check-label" for="author_{{ author.id }}">
+                            {{ author.nombre_autor }} ({{ author.nacionalidad }})
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Fusionar Autores</button>
+        </form>
+    {% else %}
+        <p>No se encontraron autores duplicados.</p>
+    {% endif %}
+    <a href="{% url 'lista_autores' %}" class="btn btn-secondary mt-3">Volver a la lista de autores</a>
+</div>
+{% endblock %}
+

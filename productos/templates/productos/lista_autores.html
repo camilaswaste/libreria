@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Autores{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Autores</h2>
+    <a href="{% url 'fusionar_autores' %}" class="btn btn-primary mb-3">Fusionar Autores Duplicados</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Nacionalidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for autor in autores %}
+            <tr>
+                <td>{{ autor.nombre_autor }}</td>
+                <td>{{ autor.nacionalidad }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
